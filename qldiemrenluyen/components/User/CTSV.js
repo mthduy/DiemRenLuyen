@@ -1,12 +1,24 @@
-import { View } from "react-native";
-import { Text } from "react-native-paper";
+// CTSV.js
+import React from 'react';
+import { View, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const CTSV = () => {
-    return (
-        <View>
-            <Text>Trang dành cho Chuyên viên CTSV</Text>
-        </View>
-    );
+  const navigation = useNavigation();
+
+  return (
+    <View>
+      <Button
+        title="Thêm tài khoản Trợ lý"
+        onPress={() => navigation.navigate("home", { screen: 'CTSV_addaccount' })}
+ // Điều hướng tới màn hình CTSV_addaccount
+      />
+      <Button
+        title="Xem thống kê điểm rèn luyện"
+        onPress={() => navigation.navigate("home", { screen: 'CTSV_report' })}  
+      />
+    </View>
+  );
 };
 
 export default CTSV;

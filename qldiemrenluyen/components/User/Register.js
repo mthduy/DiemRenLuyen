@@ -5,9 +5,12 @@ import MyStyles from "../../styles/MyStyles"
 import * as ImagePicker from 'expo-image-picker';
 import APIs, { endpoints } from "../../configs/APIs";
 import { useNavigation } from "@react-navigation/native";
+import { Picker } from "@react-native-picker/picker";
 
 const Register = () => {
     const [user, setUser] = useState({});
+    const [selectedDepartment, setSelectedDepartment] = useState(""); // Trường lưu khoa
+    
 
     const users = {
         "first_name": {
@@ -27,7 +30,13 @@ const Register = () => {
             "field": "username",
             "icon": "text",
             "secureTextEntry": false
-        }, "password": {
+        },
+        "email": {  
+            "title": "Email Address",
+            "field": "email",
+            "icon": "email",
+            "secureTextEntry": false
+        },"password": {
             "title": "Mật khẩu",
             "field": "password",
             "icon": "eye",
@@ -71,21 +80,22 @@ const Register = () => {
     };
 
     const register = async () => {
-        if (!validateEmail(user.username)) {
+        if (!validateEmail(user.email)) {  // Kiểm tra email
             alert("Email phải có đúng dạng do trường cung cấp");
             return;
         }
-        if (!user.username || !user.password || !user.first_name || !user.last_name) {
+        if (!user.email || !user.username || !user.password || !user.first_name || !user.last_name || !selectedDepartment) {  // Kiểm tra các trường
             alert("Vui lòng điền đầy đủ thông tin.");
             return;
         }
-        if (user.password !== user.confirm)
+        if (user.password !== user.confirm) {
             setErr(true);
-        else {
+        } else {
             setErr(false);
             let form = new FormData();
-
-            for (let key in user)
+    
+            // Lặp qua các trường thông tin và thêm vào formData
+            for (let key in user) {
                 if (key !== 'confirm') {
                     if (key === 'avatar') {
                         if (user.avatar) {
@@ -95,17 +105,19 @@ const Register = () => {
                                 type: user.avatar.type || "image/jpeg",
                             });
                         }
-                    
-                    } else
+                    } else {
                         form.append(key, user[key]);
+                    }
                 }
-
-            console.info(form)
+            }
+            form.append('email', user.email);  // Đảm bảo email được thêm vào form
+            // Thêm khoa vào form
+            form.append('department', selectedDepartment);
+    
+            console.info(form);
             
-                
             setLoading(true);
             try {
-                
                 let res = await APIs.post(endpoints['register'], form, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
@@ -116,14 +128,12 @@ const Register = () => {
                 nav.navigate("login");
             } catch (ex) {
                 console.error(ex);
-                // Hiển thị lỗi cho người dùng
-                alert( `Đăng ký thất bại. Vui lòng thử lại. Lỗi: ${ex.message}`);
+                alert(`Đăng ký thất bại. Vui lòng thử lại. Lỗi: ${ex.message}`);
             } finally {
                 setLoading(false);
             }
-            
         }
-    }
+    };
     
     return (
         <View style={MyStyles.container}>
@@ -135,6 +145,19 @@ const Register = () => {
             
                 {Object.values(users).map(u => <TextInput secureTextEntry={u.secureTextEntry} key={u.field} value={user[u.field]} onChangeText={t => change(t, u.field)} 
                 style={MyStyles.margin} placeholder={u.title} right={<TextInput.Icon icon={u.icon} />} />)}
+                
+                 {/* Dropdown cho khoa */}
+                 <Picker
+                    selectedValue={selectedDepartment}
+                    onValueChange={(itemValue) => setSelectedDepartment(itemValue)}
+                    style={{ margin: 10 }}
+                >
+                    <Picker.Item label="Chọn khoa" value="" />
+                    <Picker.Item label="Khoa Công Nghệ Thông Tin" value="IT" />
+                    <Picker.Item label="Khoa Kinh Tế" value="Economics" />
+                    <Picker.Item label="Khoa Xây Dựng" value="Construction" />
+                    {/* Thêm các khoa khác nếu cần */}
+                </Picker>
 
                 <TouchableOpacity onPress={pickImage}>
                     <Text style={MyStyles.margin}>Chọn ảnh đại diện...</Text>

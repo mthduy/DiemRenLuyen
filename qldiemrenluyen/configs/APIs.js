@@ -8,6 +8,11 @@ export const endpoints = {
     'currentUser': '/users/current-user/',
     'categories': '/categories/',
     'register': '/users/',
+    'create_staff': '/users/create-staff/',
+    'newsfeeds':'/newsfeeds/', 
+    'list':'/newsfeeds/list/',
+    'registration': '/registration/',              // ✅ Đăng ký hoạt động
+    'registration_list': '/registration/list/'     // ✅ Lấy danh sách đăng ký (giả sử đúng)
 }
 
 export const authApis = (token) => {

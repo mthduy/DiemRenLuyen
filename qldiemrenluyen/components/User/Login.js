@@ -50,31 +50,45 @@ const Login = () => {
         }
         return true;
     };
+    
+    
 
     const checkLogin = async () => {
         const token = await AsyncStorage.getItem("token");
+        console.log("Token hiện tại:", token);
         const savedRole = await AsyncStorage.getItem("role");
     
         if (!token || !savedRole) {
-            console.log("Không có token hoặc vai trò lưu trữ.");
-            return;
+            console.log("Không tìm thấy token hoặc vai trò trong AsyncStorage, yêu cầu người dùng đăng nhập.");
+            return nav.navigate("Login"); // Điều hướng đến màn hình đăng nhập
         }
     
-        console.log("Token hiện tại:", token);
-        console.log("Vai trò hiện tại:", savedRole);
+        console.log("Token và vai trò đã lưu:", token, savedRole);
     
+        // Lấy thông tin người dùng từ API
         setLoading(true);
         try {
-            let currentUser = await authApis(token).get(endpoints["current-user"]);
-            console.log("Thông tin người dùng:", currentUser.data);
+            let currentUser = await authApis(token).get(endpoints["currentUser"]);
+            console.log("Thông tin người dùng từ API:", currentUser.data);
     
-            if (currentUser.data.role === savedRole) {
+            if (!currentUser.data || !currentUser.data.role) {
+                console.error("Không có vai trò trong dữ liệu người dùng từ API");
+                return;
+            }
+    
+            const apiRole = currentUser.data.role;  // Vai trò của API
+            console.log("Vai trò của API:", apiRole);
+            console.log("Vai trò đã lưu:", savedRole);
+    
+            // Kiểm tra vai trò từ API và vai trò đã lưu
+            if (apiRole === savedRole) {
                 dispatch({
                     type: "LOGIN",
                     payload: currentUser.data,
                 });
     
-                switch (currentUser.data.role) {
+                // Điều hướng theo vai trò
+                switch (apiRole) {
                     case "student":
                         nav.navigate("SinhVien");
                         break;
@@ -94,12 +108,14 @@ const Login = () => {
             }
         } catch (error) {
             console.error("Lỗi kiểm tra đăng nhập:", error);
-            await AsyncStorage.removeItem("token");
-            await AsyncStorage.removeItem("role");
+            Alert.alert("Lỗi", "Đăng nhập không thành công. Vui lòng thử lại sau!");
         } finally {
             setLoading(false);
         }
     };
+    
+    
+    
     
     
 
@@ -112,18 +128,16 @@ const Login = () => {
     
         setLoading(true);
         try {
-            // Gửi yêu cầu đăng nhập với vai trò đã chọn
             let res = await APIs.post(endpoints["login"], {
                 ...user,
                 grant_type: "password",
                 client_id: CLIENT_ID,
                 client_secret: CLIENT_SECRET,
-                role: role, // Vai trò được chọn
+                role: role,
             });
     
             console.info("Dữ liệu trả về từ API:", res.data);
     
-            // Kiểm tra nếu không có token
             if (!res.data.access_token) {
                 Alert.alert("Lỗi", "Không nhận được token từ server!");
                 return;
@@ -131,13 +145,12 @@ const Login = () => {
     
             // Lưu token và vai trò vào AsyncStorage
             await AsyncStorage.setItem("token", res.data.access_token);
-            await AsyncStorage.setItem("role", role);
+            await AsyncStorage.setItem("role", role);  // Lưu vai trò vào AsyncStorage
     
             // Gửi yêu cầu để lấy thông tin người dùng từ API với token
             let currentUser = await authApis(res.data.access_token).get(endpoints["currentUser"]);
             console.info("Thông tin người dùng từ API:", currentUser.data);
     
-            // Kiểm tra vai trò của người dùng từ API
             if (!currentUser.data || !currentUser.data.role) {
                 console.error("Không có vai trò trong dữ liệu người dùng từ API");
                 return;
@@ -147,7 +160,7 @@ const Login = () => {
             console.log("Vai trò của API:", apiRole);
             console.log("Vai trò được chọn:", role);
     
-            // So sánh vai trò từ API và vai trò người dùng đã chọn
+            // Kiểm tra vai trò của người dùng
             if (apiRole !== role) {
                 Alert.alert(
                     "Lỗi",
