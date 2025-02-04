@@ -196,7 +196,7 @@ const Home = ()=>{
                     <List.Item
                         key={item.id}
                         title={item.title}
-                        description={item.description}
+                        description={item.description.replace(/<\/?p>/g, '')}
                         left={props => <Image style={MyStyles.box} source={{ uri: item.image }} />}
             />
                 

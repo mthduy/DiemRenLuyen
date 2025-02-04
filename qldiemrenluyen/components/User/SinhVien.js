@@ -9,7 +9,7 @@ const SinhVien = () => {
         <View style={{ padding: 20 }}>
             <Button
                 mode="contained"
-                onPress={() => navigation.navigate("home")}
+                onPress={() => navigation.navigate("BanTin")}
                 style={{ marginBottom: 10 }}
             >
                 Đăng ký hoạt động
@@ -17,9 +17,16 @@ const SinhVien = () => {
 
             <Button
                 mode="contained"
-                onPress={() => navigation.navigate("home", { screen: 'SinhVien_XemHĐ'})}
+                onPress={() => navigation.navigate("home", { screen: 'SinhVien_XemHD'})}
             >
                 Xem hoạt động đã tham gia
+            </Button>
+            <Button
+                mode="contained"
+                onPress={() => navigation.navigate("home", { screen: 'SinhVien_BaoThieu'})}
+                style={{ marginTop: 10 }}
+            >
+                Báo Thiếu
             </Button>
         </View>
     );

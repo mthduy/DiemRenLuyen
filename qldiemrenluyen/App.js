@@ -14,13 +14,15 @@ import CTSV from './components/User/CTSV';
 import TroLySV from './components/User/TroLySV';
 import CTSV_addaccount from './components/User/CTSV_addaccount';
 import CTSV_report from './components/User/CTSV_report';
-import SinhVien_XemHĐ from './components/User/SinhVien_XemHĐ';
+import SinhVien_XemHĐ from './components/User/SinhVien_XemHD';
 import TroLySV_XemThanhTich from './components/User/TroLySV_XemThanhTich';
 import TroLySV_XemBaoThieu from './components/User/TroLySV_XemBaoThieu';
-import TroLySV_XacNhanDiem from './components/User/TroLySV_XacNhanDiem';
 import TroLySV_TaoHoatDong from './components/User/TroLySV_TaoHoatDong';
 import TroLySV_NapDanhSachCSV from './components/User/TroLySV_NapDanhSachCSV';
 import BanTin from './components/User/BanTin';
+import SinhVien_BaoThieu from './components/User/SinhVien_BaoThieu';
+import ChatScreen from './components/User/ChatScreen';
+import TroLySV_XemThongKe from './components/User/TroLySV_XemThongKe';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,18 +32,20 @@ const StackNavigator = () => {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" component={Home} />
       <Stack.Screen name="SinhVien" component={SinhVien} />
-      <Stack.Screen name="SinhVien_XemHĐ" component={SinhVien_XemHĐ} />
+      <Stack.Screen name="SinhVien_XemHD" component={SinhVien_XemHĐ} />
+      <Stack.Screen name="SinhVien_BaoThieu" component={SinhVien_BaoThieu} />
       <Stack.Screen name="CTSV" component={CTSV} />
       <Stack.Screen name="CTSV_addaccount" component={CTSV_addaccount} />
       <Stack.Screen name="CTSV_report" component={CTSV_report} />
       <Stack.Screen name="TroLySV" component={TroLySV} />
       <Stack.Screen name="TroLySV_XemThanhTich" component={TroLySV_XemThanhTich} />
       <Stack.Screen name="TroLySV_XemBaoThieu" component={TroLySV_XemBaoThieu} />
-      <Stack.Screen name="TroLySV_XacNhanDiem" component={TroLySV_XacNhanDiem} />
       <Stack.Screen name="TroLySV_TaoHoatDong" component={TroLySV_TaoHoatDong} />
       <Stack.Screen name="TroLySV_NapDanhSachCSV" component={TroLySV_NapDanhSachCSV} />
+      <Stack.Screen name="TroLySV_XemThongKe" component={TroLySV_XemThongKe} />
       <Stack.Screen name="BanTin" component={BanTin} />
       <Stack.Screen name="profile" component={UserProfile} />
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
 
     
     </Stack.Navigator>

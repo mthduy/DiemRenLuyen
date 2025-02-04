@@ -12,12 +12,10 @@ const TroLySV = () => {
             </Button>
 
             <Button mode="contained" onPress={() => navigation.navigate("home",{screen:'TroLySV_XemBaoThieu'})} style={{ marginBottom: 10 }}>
-                Xem danh sách báo thiếu
+                Xem danh sách báo thiếu và xác nhận
             </Button>
 
-            <Button mode="contained" onPress={() => navigation.navigate("home",{screen:'TroLySV_XacNhanDiem'})} style={{ marginBottom: 10 }}>
-                Xác nhận hoặc từ chối điểm rèn luyện
-            </Button>
+            
 
             <Button mode="contained" onPress={() => navigation.navigate("home", {screen: 'TroLySV_TaoHoatDong'})} style={{ marginBottom: 10 }}>
                 Tạo hoạt động mới
@@ -25,6 +23,9 @@ const TroLySV = () => {
 
             <Button mode="contained" onPress={() => navigation.navigate("home",{screen:'TroLySV_NapDanhSachCSV'})} style={{ marginBottom: 10 }}>
                 Nạp danh sách điểm danh (CSV)
+            </Button>
+            <Button mode="contained" onPress={() => navigation.navigate("home",{screen:'TroLySV_XemThongKe'})} style={{ marginBottom: 10 }}>
+                Xem thống kê
             </Button>
 
 

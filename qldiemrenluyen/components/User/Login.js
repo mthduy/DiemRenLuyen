@@ -15,6 +15,7 @@ const Login = () => {
     const [role, setRole] = useState(null); // Vai trò được chọn
     const dispatch = useContext(MyDispatchContext);
     const nav = useNavigation();
+    const [showPassword, setShowPassword] = useState(false); // Trạng thái ẩn/hiện mật khẩu
 
     const users = {
         username: {
@@ -115,7 +116,10 @@ const Login = () => {
     };
     
     
-    
+    const togglePasswordVisibility = () => {
+        setShowPassword((prev) => !prev); // Đảo trạng thái ẩn/hiện mật khẩu
+    };
+
     
     
 
@@ -174,6 +178,8 @@ const Login = () => {
                 type: "LOGIN",
                 payload: currentUser.data,
             });
+           
+             
     
             // Điều hướng theo vai trò
             switch (apiRole) {
@@ -206,14 +212,21 @@ const Login = () => {
                 <>
                     {Object.values(users).map((u) => (
                         <TextInput
-                            secureTextEntry={u.secureTextEntry}
-                            key={u.field}
-                            value={user[u.field]}
-                            onChangeText={(t) => change(t, u.field)}
-                            style={MyStyles.margin}
-                            placeholder={u.title}
-                            right={<TextInput.Icon icon={u.icon} />}
-                        />
+                        secureTextEntry={u.secureTextEntry && !showPassword} // Kiểm tra trạng thái mật khẩu
+                        key={u.field}
+                        value={user[u.field]}
+                        onChangeText={(t) => change(t, u.field)}
+                        style={MyStyles.margin}
+                        placeholder={u.title}
+                        right={
+                            u.secureTextEntry && (
+                                <TextInput.Icon 
+                                    icon={showPassword ? "eye-off" : "eye"} 
+                                    onPress={togglePasswordVisibility} // Bắt sự kiện nhấn vào mắt
+                                />
+                            )
+                        }
+                    />
                     ))}
                     <Picker
                         selectedValue={role}
