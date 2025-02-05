@@ -3,7 +3,7 @@ import { View, Text, Button, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker"; // Import Picker
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
-import APIs, { endpoints } from "../../configs/APIs"; // Điều chỉnh đường dẫn đúng với dự án của bạn
+import APIs, { endpoints, BASE_URL } from "../../configs/APIs"; // Điều chỉnh đường dẫn đúng với dự án của bạn
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const TroLySV_NapDanhSachCSV = () => {
@@ -46,11 +46,11 @@ const TroLySV_NapDanhSachCSV = () => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     if (page === 0) return; // Dừng nếu không còn dữ liệu
     loadActivities();
-}, [page]); // Chạy lại khi page thay đổi
-
+  }, [page]); // Chạy lại khi page thay đổi
 
   // Gọi API GET /registration/export-csv/
   const fetchCSVFile = async () => {
@@ -60,15 +60,18 @@ const TroLySV_NapDanhSachCSV = () => {
     }
   
     try {
-      // Đảm bảo URL đầy đủ với scheme (http:// hoặc https://)
-      const url = `${endpoints.registration_exprort_csv}?activity_id=${activityId}`;
-      const response = await axios.get(url);  // Sử dụng URL đầy đủ
+      // Ensure the URL is correct
+      const url = `https://dinhtien.pythonanywhere.com/registration/export-csv/?activity_id=${activityId}`;
+      console.log(url); // Kiểm tra URL trong console      
   
-      const fileBlob = new Blob([response.data], { type: "text/csv" });
+      // Update the request to handle the response as a blob
+      const response = await axios.get(url, { responseType: "blob" });
+  
+      const fileBlob = response.data;
       const fileURL = URL.createObjectURL(fileBlob);
       const link = document.createElement("a");
       link.href = fileURL;
-      link.download = "registration_list.csv"; // Đặt tên file khi tải xuống
+      link.download = "registration_list.csv"; // Set the file name
       link.click();
       alert("Đã tải file CSV!");
     } catch (error) {
@@ -84,7 +87,6 @@ const TroLySV_NapDanhSachCSV = () => {
       }
     }
   };
-  
 
   // Chọn file CSV từ máy của người dùng
   const pickCSVFile = async () => {

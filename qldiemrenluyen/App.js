@@ -23,6 +23,7 @@ import BanTin from './components/User/BanTin';
 import SinhVien_BaoThieu from './components/User/SinhVien_BaoThieu';
 import ChatScreen from './components/User/ChatScreen';
 import TroLySV_XemThongKe from './components/User/TroLySV_XemThongKe';
+import ChiTietHoatDong from './components/User/ChiTietHoatDong';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +47,7 @@ const StackNavigator = () => {
       <Stack.Screen name="BanTin" component={BanTin} />
       <Stack.Screen name="profile" component={UserProfile} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
-
+      <Stack.Screen name="ChiTietHoatDong" component={ChiTietHoatDong}/>
     
     </Stack.Navigator>
   );

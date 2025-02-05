@@ -193,12 +193,14 @@ const Home = ()=>{
                 data={activities} 
                 renderItem={({ item }) => (
                     <View style={MyStyles.activityContainer}>
+                         <TouchableOpacity onPress={() => navigation.navigate('ChiTietHoatDong', { activityId: item.id })}>
                     <List.Item
                         key={item.id}
                         title={item.title}
                         description={item.description.replace(/<\/?p>/g, '')}
                         left={props => <Image style={MyStyles.box} source={{ uri: item.image }} />}
             />
+            </TouchableOpacity>
                 
 
     </View>

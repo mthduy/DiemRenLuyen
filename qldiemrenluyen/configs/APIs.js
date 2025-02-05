@@ -26,8 +26,8 @@ export const endpoints = {
     'newsfeeds_comments_count':'/newsfeeds/{id}/comments-count/', 
     'newsfeeds_likes_count':'/newsfeeds/{id}/likes-count/',
     'registration_exprort_csv':'/registration/export-csv/',
-    'participation_upload_csv': '/participation/upload-csv/'
-
+    'participation_upload_csv': '/participation/upload-csv/',
+    'activities_read': (id) => `/activities/${id}/`
 
 }
 
