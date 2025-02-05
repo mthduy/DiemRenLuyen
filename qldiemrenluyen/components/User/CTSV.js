@@ -23,7 +23,7 @@ const CTSV = () => {
       <View style={styles.buttonContainer}>
         <Button
           title="Xem thống kê điểm rèn luyện"
-          onPress={() => navigation.navigate("home", { screen: 'CTSV_report' })}
+          onPress={() => navigation.navigate("home", { screen: 'TroLySV_XemThongKe' })}
           color="#2196F3" // Màu xanh dương cho nút thống kê
           icon={<Icon name="insert-chart" size={20} color="white" />} // Thêm icon "insert-chart"
         />

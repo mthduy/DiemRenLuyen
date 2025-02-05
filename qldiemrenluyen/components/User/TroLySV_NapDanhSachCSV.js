@@ -3,6 +3,8 @@ import { View, Text, Button, Alert } from "react-native";
 import { Picker } from "@react-native-picker/picker"; // Import Picker
 import * as DocumentPicker from "expo-document-picker";
 import axios from "axios";
+import { FileSystem } from "expo-file-system"; // For handling file system
+import * as Sharing from "expo-sharing"; // For sharing the file
 import APIs, { endpoints, BASE_URL } from "../../configs/APIs"; // Điều chỉnh đường dẫn đúng với dự án của bạn
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -53,40 +55,46 @@ const TroLySV_NapDanhSachCSV = () => {
   }, [page]); // Chạy lại khi page thay đổi
 
   // Gọi API GET /registration/export-csv/
-  const fetchCSVFile = async () => {
-    if (!activityId) {
-      Alert.alert("Lỗi", "Vui lòng chọn một hoạt động.");
-      return;
+
+
+const downloadCSV = async () => {
+  try {
+    // Kiểm tra xem FileSystem có sẵn không
+    if (!FileSystem.cacheDirectory) {
+      throw new Error("FileSystem không khả dụng");
     }
-  
-    try {
-      // Ensure the URL is correct
-      const url = `https://dinhtien.pythonanywhere.com/registration/export-csv/?activity_id=${activityId}`;
-      console.log(url); // Kiểm tra URL trong console      
-  
-      // Update the request to handle the response as a blob
-      const response = await axios.get(url, { responseType: "blob" });
-  
-      const fileBlob = response.data;
-      const fileURL = URL.createObjectURL(fileBlob);
-      const link = document.createElement("a");
-      link.href = fileURL;
-      link.download = "registration_list.csv"; // Set the file name
-      link.click();
-      alert("Đã tải file CSV!");
-    } catch (error) {
-      if (error.response) {
-        console.error("Lỗi từ server:", error.response.data);
-        Alert.alert("Lỗi từ server", error.response.data);
-      } else if (error.request) {
-        console.error("Không nhận được phản hồi:", error.request);
-        Alert.alert("Lỗi kết nối", "Không nhận được phản hồi từ server.");
+
+    const url = `https://dinhtien.pythonanywhere.com/registration/export-csv/?activity_id=${activityId}`;
+    console.log(url); // Kiểm tra URL trong console
+
+    const response = await axios.get(url, { responseType: 'blob' });
+
+    console.log('Response:', response.data);
+
+    if (response.data) {
+      const fileUri = `${FileSystem.cacheDirectory}activity.csv`;
+
+      await FileSystem.writeAsStringAsync(fileUri, response.data, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      if (await Sharing.isAvailableAsync()) {
+        await Sharing.shareAsync(fileUri);
       } else {
-        console.error("Lỗi xảy ra khi cấu hình yêu cầu:", error.message);
-        Alert.alert("Lỗi", "Có lỗi xảy ra khi gửi yêu cầu.");
+        Alert.alert('Tải file thành công', `File đã được lưu tại: ${fileUri}`);
       }
+    } else {
+      Alert.alert("Lỗi", "Không có dữ liệu hoặc lỗi từ server.");
     }
-  };
+  } catch (error) {
+    console.error("Lỗi tải CSV:", error);
+    Alert.alert("Lỗi", "Không thể tải file CSV");
+  }
+};
+
+  
+
+  
 
   // Chọn file CSV từ máy của người dùng
   const pickCSVFile = async () => {
@@ -127,11 +135,6 @@ const TroLySV_NapDanhSachCSV = () => {
     }
   };
 
-  // Lấy danh sách hoạt động khi component mount
-  useEffect(() => {
-    loadActivities();
-  }, [page]); // Gọi lại khi thay đổi page
-
   return (
     <View style={{ padding: 20 }}>
       <Text style={{ fontSize: 18, fontWeight: "bold" }}>Nạp danh sách điểm danh</Text>
@@ -155,7 +158,7 @@ const TroLySV_NapDanhSachCSV = () => {
       </Picker>
 
       {/* Nút tải CSV mẫu */}
-      <Button title="Tải file CSV mẫu" onPress={fetchCSVFile} />
+      <Button title="Tải file CSV mẫu" onPress={downloadCSV} />
       <View style={{ marginVertical: 20 }} />
 
       {/* Chọn file CSV */}
